@@ -44,11 +44,11 @@ inline RecognitionMatch match_to_site(const std::string& str, size_t i, const ch
             match.offset = 0;
             match.length = cl;
         }
-    }   
+    }
 
     //printf("Match site: %s %s %s %d %d\n", str.c_str(), str.substr(i).c_str(), recognition, match.offset, match.length);
     if(match.length > 0) {
-        match.covers_methylated_site = 
+        match.covers_methylated_site =
             str.substr(i, match.length).find_first_of(METHYLATED_SYMBOL) != std::string::npos;
     }
 
@@ -73,7 +73,7 @@ class Alphabet
         virtual const char* get_recognition_site_methylated(size_t i) const = 0;
         virtual const char* get_recognition_site_methylated_complement(size_t i) const = 0;
 
-        // return the lexicographic rank of the kmer amongst all strings of 
+        // return the lexicographic rank of the kmer amongst all strings of
         // length k for this alphabet
         inline uint32_t kmer_rank(const char* str, uint32_t k) const
         {
@@ -87,7 +87,7 @@ class Alphabet
             }
             return r;
         }
-        
+
         // Increment the input string to be the next sequence in lexicographic order
         inline void lexicographic_next(std::string& str) const
         {
@@ -171,7 +171,7 @@ class Alphabet
                         break;
                     }
                 }
-                
+
                 // disambiguate if not a recognition site
                 if(!is_recognition_site) {
                     assert(IUPAC::isValid(out[i]));
@@ -258,7 +258,7 @@ class Alphabet
     static const char* _name; \
     static const char* _base; \
     static const char* _complement; \
-    static const uint32_t _size; 
+    static const uint32_t _size;
 
 #define BASIC_ACCESSOR_BOILERPLATE \
     virtual const char* get_name() const { return _name; } \
@@ -280,7 +280,7 @@ struct DNAAlphabet : public Alphabet
     virtual size_t recognition_length() const { return 0; }
     virtual const char* get_recognition_site(size_t) const { return NULL; }
     virtual const char* get_recognition_site_methylated(size_t) const { return NULL; }
-    virtual const char* get_recognition_site_methylated_complement(size_t) const { 
+    virtual const char* get_recognition_site_methylated_complement(size_t) const {
         return NULL;
     }
 
@@ -307,7 +307,7 @@ struct UtoTRNAAlphabet : public Alphabet
     virtual size_t recognition_length() const { return 0; }
     virtual const char* get_recognition_site(size_t) const { return NULL; }
     virtual const char* get_recognition_site_methylated(size_t) const { return NULL; }
-    virtual const char* get_recognition_site_methylated_complement(size_t) const { 
+    virtual const char* get_recognition_site_methylated_complement(size_t) const {
         return NULL;
     }
 
@@ -333,23 +333,23 @@ struct UtoTRNAAlphabet : public Alphabet
     virtual const char* get_recognition_site_methylated(size_t i) const { return _recognition_sites_methylated[i]; } \
     virtual const char* get_recognition_site_methylated_complement(size_t i) const { \
         return _recognition_sites_methylated_complement[i]; \
-    } 
+    }
 
 //
 // methyl-cytosine in CG context
-// 
+//
 struct MethylCpGAlphabet : public Alphabet
 {
     // member variables, expanded by macrocs
     BASIC_MEMBER_BOILERPLATE
     METHYLATION_MEMBER_BOILERPLATE
-    
+
     // member functions
     BASIC_ACCESSOR_BOILERPLATE
     METHYLATION_ACCESSOR_BOILERPLATE
 
     // does this alphabet contain all of the nucleotides in bases?
-    virtual inline bool contains_all(const char *bases) const 
+    virtual inline bool contains_all(const char *bases) const
     {
         return strspn(bases, _base) == strlen(bases);
     }
@@ -357,19 +357,19 @@ struct MethylCpGAlphabet : public Alphabet
 
 //
 // Dam methylation: methyl-adenine in GATC context
-// 
+//
 struct MethylDamAlphabet : public Alphabet
 {
     // member variables, expanded by macrocs
     BASIC_MEMBER_BOILERPLATE
     METHYLATION_MEMBER_BOILERPLATE
-    
+
     // member functions
     BASIC_ACCESSOR_BOILERPLATE
     METHYLATION_ACCESSOR_BOILERPLATE
 
     // does this alphabet contain all of the nucleotides in bases?
-    virtual inline bool contains_all(const char *bases) const 
+    virtual inline bool contains_all(const char *bases) const
     {
         return strspn(bases, _base) == strlen(bases);
     }
@@ -377,19 +377,19 @@ struct MethylDamAlphabet : public Alphabet
 
 //
 // Dcm methylation: methyl-cytosine in CCAGG and CCTGG context
-// 
+//
 struct MethylDcmAlphabet : public Alphabet
 {
     // member variables, expanded by macrocs
     BASIC_MEMBER_BOILERPLATE
     METHYLATION_MEMBER_BOILERPLATE
-    
+
     // member functions
     BASIC_ACCESSOR_BOILERPLATE
     METHYLATION_ACCESSOR_BOILERPLATE
 
     // does this alphabet contain all of the nucleotides in bases?
-    virtual inline bool contains_all(const char *bases) const 
+    virtual inline bool contains_all(const char *bases) const
     {
         return strspn(bases, _base) == strlen(bases);
     }
